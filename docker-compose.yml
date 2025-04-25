@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: trafico
+      POSTGRES_USER: jairo
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - red_sd
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - red_sd
+
+  traffic_api:
+    build: ./traffic_api
+    container_name: traffic_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./traffic_api:/app
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - red_sd
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
+
+networks:
+  red_sd:
+    driver: bridge

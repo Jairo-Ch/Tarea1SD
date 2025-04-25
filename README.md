@@ -1,102 +1,130 @@
-Tarea1SD: Plataforma de Análisis de Tráfico Región Metropolitana 🚦
+# Tarea1SD: Plataforma de Análisis de Tráfico Región Metropolitana 🚦
+
 Proyecto de Sistemas Distribuidos - 2025-1
 
-📚 Descripción
-Este proyecto tiene como objetivo desarrollar una plataforma distribuida capaz de extraer, almacenar, cachear y consultar eventos de tráfico en tiempo real de la Región Metropolitana de Chile utilizando datos del Live Map de Waze.
+## 📚 Descripción
+
+Este proyecto tiene como objetivo desarrollar una plataforma distribuida capaz de **extraer, almacenar, cachear y consultar eventos de tráfico** en tiempo real de la Región Metropolitana de Chile utilizando datos del **Live Map de Waze**.
 
 La plataforma implementa:
 
-Scraper: para extraer eventos viales.
+- **Scraper**: para extraer eventos viales.
+- **Almacenamiento**: en base de datos **PostgreSQL**.
+- **Caché**: de eventos recientes en **Redis**.
+- **API REST**: desarrollada en **FastAPI** para consultar los eventos.
 
-Almacenamiento: en base de datos PostgreSQL.
+Todo el sistema está diseñado en forma modular y desplegado usando **Docker Compose**.
 
-Caché: de eventos recientes en Redis.
+---
 
-API REST: desarrollada en FastAPI para consultar los eventos.
+## 📂 Estructura del Proyecto
 
-Todo el sistema está diseñado en forma modular y desplegado usando Docker Compose.
+---
 
-📂 Estructura del Proyecto
-pgsql
-Copiar
-Tarea1SD/
-├── docker-compose.yml
-├── README.md
-├── event_collector/
-│   └── waze_scraper_masivo.py
-│   └── eventos.json
-├── storage/
-│   └── crear_tabla.py
-│   └── insertar_eventos.py
-│   └── carga_a_redis.py
-│   └── cache_manager.py
-├── traffic_api/
-│   └── main.py
-│   └── Dockerfile
-├── tests/
-│   └── pruebas_rendimiento.py
-└── requirements.txt
-🛠️ Tecnologías Utilizadas
-Python 3.11
+## 🛠️ Tecnologías Utilizadas
 
-FastAPI (API REST)
+- **Python 3.11**
+- **FastAPI** (API REST)
+- **PostgreSQL 15** (Base de datos)
+- **Redis 7** (Sistema de caché)
+- **Docker y Docker Compose**
+- **Requests** (para web scraping)
 
-PostgreSQL 15 (Base de datos)
+---
 
-Redis 7 (Sistema de caché)
+## ⚙️ Instalación y Ejecución
 
-Docker y Docker Compose
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/Jairo-Ch/Tarea1SD.git
+   cd Tarea1SD
+   Levanta los servicios con Docker Compose:
 
-Requests (para web scraping)
 
-⚙️ Instalación y Ejecución
-Clona el repositorio:
-
-bash
-Copiar
-git clone https://github.com/Jairo-Ch/Tarea1SD.git
-cd Tarea1SD
-Levanta todos los servicios con Docker:
-
-bash
-Copiar
 docker compose up --build
-Activa el entorno virtual (opcional si deseas ejecutar scripts locales):
+Esto levantará automáticamente:
+
+Base de datos PostgreSQL
+
+Redis
+
+FastAPI en http://localhost:8000
+
+(Opcional) Activa el entorno virtual si deseas correr scripts:
 
 bash
 Copiar
 source venv/bin/activate
-Abre en tu navegador:
+(Opcional) Ejecuta scripts manualmente:
+
+Insertar eventos a PostgreSQL:
+
+bash
+Copiar
+python3 storage/insertar_eventos.py
+Cargar eventos recientes a Redis:
+
+bash
+Copiar
+python3 storage/carga_a_redis.py
+Accede a la documentación interactiva en Swagger UI:
 
 bash
 Copiar
 http://localhost:8000/docs
-para explorar la API creada con FastAPI.
-
-📈 Endpoints Disponibles
+🌐 Endpoints Disponibles
 GET /eventos/recientes
-Devuelve los eventos más recientes almacenados en Redis.
+
+Devuelve los eventos más recientes desde Redis.
 
 GET /eventos/zona?ciudad={nombre}
-Devuelve eventos almacenados en PostgreSQL filtrados por ciudad.
+
+Consulta eventos de una ciudad específica desde PostgreSQL.
 
 GET /eventos/tipo?tipo={tipo}
-Devuelve eventos almacenados en PostgreSQL filtrados por tipo de evento.
 
-📊 Pruebas de Rendimiento
-Se realizaron pruebas de rendimiento simulando consultas concurrentes:
+Consulta eventos filtrados por tipo desde PostgreSQL.
+
+📊 Resultados de Pruebas de Rendimiento
+Se midieron los tiempos de respuesta promedio de los endpoints:
 
 
-Endpoint	Tiempo Promedio de Respuesta
+Endpoint	Tiempo Promedio
 /eventos/recientes	0.0041 segundos
-/eventos/zona	0.0159 segundos
-/eventos/tipo	0.0435 segundos
-📝 Notas Finales
-Se recolectaron más de 10.000 eventos únicos desde Waze.
+/eventos/zona?ciudad=...	0.0159 segundos
+/eventos/tipo?tipo=...	0.0435 segundos
+Pruebas ejecutadas con el script tests/pruebas_rendimiento.py.
 
-Se utilizó un enfoque modular para facilitar el mantenimiento y escalabilidad.
+📦 Consideraciones Finales
+Eventos extraídos: Más de 10.000 eventos únicos recopilados desde Waze Live Map.
 
-El diseño permite extender el proyecto a otras regiones fácilmente.
+Distribución de servicios: Cada servicio corre en un contenedor Docker independiente.
 
-📌 Repositorio
-GitHub - Tarea1SD
+Alta disponibilidad: Redis y PostgreSQL permiten respuestas rápidas y fiables.
+
+Modularidad: La arquitectura está lista para escalar e integrar nuevas funcionalidades.
+
+🚀 Flujo de Pruebas Rápido
+Levanta los servicios:
+
+bash
+Copiar
+docker compose up --build
+Inserta eventos si es necesario:
+
+bash
+Copiar
+python3 storage/insertar_eventos.py
+Carga eventos recientes a Redis:
+
+bash
+Copiar
+python3 storage/carga_a_redis.py
+Haz pruebas de rendimiento:
+
+bash
+Copiar
+python3 tests/pruebas_rendimiento.py
+📎 Repositorio
+🔗 Repositorio GitHub - Tarea1SD
+

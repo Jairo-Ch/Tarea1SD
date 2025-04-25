@@ -38,10 +38,23 @@ Todo el sistema está diseñado en forma modular y desplegado usando **Docker Co
    ```bash
    git clone https://github.com/Jairo-Ch/Tarea1SD.git
    cd Tarea1SD
-   Levanta los servicios con Docker Compose:
+   
+2. Levanta los servicios con Docker Compose:
+    ```bash
+    docker compose up --build
 
 
-docker compose up --build
+
+    Esto levantará automáticamente:
+
+PostgreSQL (Base de datos)
+
+Redis (Sistema de cache)
+
+traffic_api (API REST construida con FastAPI)
+
+
+       
 Esto levantará automáticamente:
 
 Base de datos PostgreSQL

@@ -19,6 +19,8 @@ Todo el sistema está diseñado en forma modular y desplegado usando **Docker Co
 
 ## 📂 Estructura del Proyecto
 
+Tarea1SD/ ├── docker-compose.yml ├── README.md ├── requirements.txt ├── event_collector/ │ └── eventos.json │ └── waze_scraper_masivo.py ├── storage/ │ └── crear_tabla.py │ └── insertar_eventos.py │ └── carga_a_redis.py │ └── cache_manager.py ├── traffic_api/ │ └── Dockerfile │ └── main.py ├── tests/ │ └── pruebas_rendimiento.py └── venv/
+
 ---
 
 ## 🛠️ Tecnologías Utilizadas
@@ -45,7 +47,7 @@ Todo el sistema está diseñado en forma modular y desplegado usando **Docker Co
 
 
 
-    Esto levantará automáticamente:
+Esto levantará automáticamente:
 
 PostgreSQL (Base de datos)
 

@@ -1,58 +1,73 @@
-# Tarea1SD: Plataforma de Análisis de Tráfico Región Metropolitana 🚦
+# Tarea1SD: Plataforma de Análisis de Tráfico Región Metropolitana
 
 Proyecto de Sistemas Distribuidos - 2025-1
 
-## 📚 Descripción
+---
 
-Este proyecto tiene como objetivo desarrollar una plataforma distribuida capaz de **extraer, almacenar, cachear y consultar eventos de tráfico** en tiempo real de la Región Metropolitana de Chile utilizando datos del **Live Map de Waze**.
+## Descripción
 
-La plataforma implementa:
+Este proyecto desarrolla una plataforma distribuida capaz de **extraer, almacenar, cachear y consultar eventos de tráfico** en tiempo real para la Región Metropolitana de Chile, utilizando datos públicos del **Live Map de Waze**.
 
-- **Scraper**: para extraer eventos viales.
-- **Almacenamiento**: en base de datos **PostgreSQL**.
-- **Caché**: de eventos recientes en **Redis**.
-- **API REST**: desarrollada en **FastAPI** para consultar los eventos.
+La plataforma incluye:
 
-Todo el sistema está diseñado en forma modular y desplegado usando **Docker Compose**.
+- **Scraper** para extraer eventos de tráfico.
+- **Almacenamiento** en base de datos **PostgreSQL**.
+- **Sistema de caché** de eventos recientes usando **Redis**.
+- **API REST** desarrollada en **FastAPI** para consultar eventos.
+- **Generadores de tráfico sintético** para pruebas de carga.
+
+Todo el sistema está construido de forma modular y desplegado con **Docker Compose**.
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
+
 
 ```
 Tarea1SD/
 ├── docker-compose.yml
 ├── README.md
-├── requirements.txt
 ├── event_collector/
-│   └── eventos.json
+│   ├── contar_eventos.py
+│   ├── eventos.json
 │   └── waze_scraper_masivo.py
 ├── storage/
-│   └── crear_tabla.py
-│   └── insertar_eventos.py
-│   └── carga_a_redis.py
-│   └── cache_manager.py
-├── traffic_api/
-│   └── Dockerfile
-│   └── main.py
+│   ├── cache_manager.py
+│   ├── carga_a_redis.py
+│   ├── crear_tabla.py
+│   ├── insertar_eventos.py
+│   ├── probar_cache.py
+│   └── probar_redis.py
 ├── tests/
 │   └── pruebas_rendimiento.py
-└── venv/
+├── traffic_api/
+│   ├── Dockerfile
+│   ├── main.py
+│   └── requirements.txt
+├── traffic_generator/
+│   ├── generador_poisson.py
+│   └── generador_uniforme.py
+└── venv/ (entorno virtual)
 ```
 ---
 
 
 
-## 🛠️ Tecnologías Utilizadas
-
-- **Python 3.11**
-- **FastAPI** (API REST)
-- **PostgreSQL 15** (Base de datos)
-- **Redis 7** (Sistema de caché)
-- **Docker y Docker Compose**
-- **Requests** (para web scraping)
 
 ---
+
+## Tecnologías Utilizadas
+
+- **Python 3.11**
+- **FastAPI** (Framework para APIs REST)
+- **PostgreSQL 15** (Base de datos relacional)
+- **Redis 7** (Sistema de almacenamiento en memoria)
+- **Docker** y **Docker Compose**
+- **Requests** (para consultas HTTP)
+- **Psycopg2** (conexión a PostgreSQL)
+
+---
+
 ## ⚙️ Instalación y Ejecución
 
 1. Clona el repositorio:
@@ -90,18 +105,29 @@ source venv/bin/activate
   ```bash
   python3 storage/carga_a_redis.py
   ```
+- Contar eventos en eventos.json::
+  ```bash
+  python3 event_collector/contar_eventos.py
+  ```
+- Ejecutar generadores de tráfico:
+  ```bash
+  python3 traffic_generator/generador_poisson.py
+  python3 traffic_generator/generador_uniforme.py
+  ```
+  
 
 ---
 
 Accede a la documentación interactiva Swagger UI:
 
+FastAPI genera automáticamente una documentación interactiva accesible en:
 ```
 http://localhost:8000/docs
 ```
-
+Permite explorar los endpoints, probar consultas y visualizar resultados directamente desde el navegador.
 ---
 
-## 🌐 Endpoints Disponibles
+##  Endpoints Disponibles
 
 - **GET /eventos/recientes**  
   Devuelve los eventos más recientes desde Redis.
@@ -114,14 +140,25 @@ http://localhost:8000/docs
 
 ---
 
-## 📊 Resultados de Pruebas de Rendimiento
+## Resultados de Pruebas de Rendimiento
 
-Se midieron los tiempos de respuesta promedio de los endpoints:
+Se midieron los tiempos de respuesta promedio de los endpoints usando 
+tests/pruebas_rendimiento.py:
 
-| Endpoint                     | Tiempo Promedio    |
+| Endpoint                      | Tiempo Promedio    |
 |-------------------------------|--------------------|
-| `/eventos/recientes`          | 0.0041 segundos    |
-| `/eventos/zona?ciudad=...`    | 0.0159 segundos    |
-| `/eventos/tipo?tipo=...`      | 0.0435 segundos    |
+| `/eventos/recientes`(Redis)   | 0.0049  segundos   |
+| `/eventos/zona?ciudad=...`    | 0.0153 segundos    |
+| `/eventos/tipo?tipo=...`      | 0.0447 segundos    |
 
-> Las pruebas fueron ejecutadas utilizando el script `tests/pruebas_rendimiento.py`.
+## Organización de Scripts Manuales
+
+* event_collector: Scraper que descarga eventos de Waze.
+* storage: Scripts de gestión de PostgreSQL y Redis.
+* traffic_generator: Scripts para generar tráfico sintético de pruebas.
+* traffic_api: Servicio FastAPI que expone los endpoints.
+* tests: Pruebas de rendimiento de la plataforma.
+
+## Notas Finales
+
+Este proyecto demuestra el uso de arquitecturas modulares, caché inteligente y diseño de APIs RESTful, aplicados a un sistema de datos urbanos en tiempo real.

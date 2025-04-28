@@ -153,11 +153,12 @@ tests/pruebas_rendimiento.py:
 
 ## Organización de Scripts Manuales
 
- **event_collector:** Scraper que descarga eventos de Waze.
- **storage:** Scripts de gestión de PostgreSQL y Redis.
- **traffic_generator:** Scripts para generar tráfico sintético de pruebas.
- **traffic_api:** Servicio FastAPI que expone los endpoints.
- **tests:** Pruebas de rendimiento de la plataforma.
+- **event_collector:** Contiene el scraper que descarga eventos de tráfico desde Waze.
+- **storage:** Scripts para gestionar la base de datos PostgreSQL y el caché Redis.
+- **traffic_generator:** Scripts que generan tráfico sintético para pruebas de carga.
+- **traffic_api:** Servicio FastAPI que expone la API REST para consultar eventos.
+- **tests:** Scripts para realizar pruebas de rendimiento del sistema.
+
 
 ## Notas Finales
 

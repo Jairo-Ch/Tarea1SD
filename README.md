@@ -161,8 +161,5 @@ tests/pruebas_rendimiento.py:
 
 ## Notas Finales
 
-<<<<<<< HEAD
+
 Este proyecto demuestra el uso de arquitecturas modulares, caché inteligente y diseño de APIs RESTful, aplicados a un sistema de datos urbanos en tiempo real.
-=======
-Este proyecto demuestra el uso de arquitecturas modulares, caché inteligente y diseño de APIs RESTful, aplicados a un sistema de datos urbanos en tiempo real.
->>>>>>> 03d74cc (Actualización final: códigos modificados, estructura limpia y README actualizado)

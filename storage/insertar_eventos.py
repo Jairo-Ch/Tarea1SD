@@ -1,16 +1,15 @@
 import json
 import psycopg2
 
-# Conexión a PostgreSQL
 conn = psycopg2.connect(
     dbname="trafico",
     user="jairo",
     password="1234",
-    host="localhost"
+    host="localhost",
+    port="5432"
 )
-cur = conn.cursor()
 
-# Cargar eventos desde JSON
+cur = conn.cursor()
 with open("../event_collector/eventos.json", "r", encoding="utf-8") as f:
     eventos = json.load(f)
 
@@ -34,11 +33,12 @@ for evento in eventos:
         ))
         insertados += 1
     except Exception as e:
-        print("❌ Error al insertar:", e)
+        print("Error al insertar:", e)
         conn.rollback()
 
 conn.commit()
 cur.close()
 conn.close()
 
-print(f"✅ Se insertaron {insertados} eventos nuevos.")
+print(f"Se insertaron {insertados} eventos nuevos.")
+

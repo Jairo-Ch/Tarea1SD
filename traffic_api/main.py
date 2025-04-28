@@ -3,30 +3,38 @@ import redis
 import json
 import psycopg2
 
-# 💡 Aquí defines el objeto `app` antes de usarlo
+# Crear la aplicación
 app = FastAPI()
 
-# Redis
-r = redis.Redis(host="localhost", port=6379, decode_responses=True)
+# Conexión a Redis
+r = redis.Redis(host="redis", port=6379, decode_responses=True)
 
-@app.get("/eventos/recientes")
-def eventos_recientes():
-    claves = r.keys("evento:*")
-    eventos = [json.loads(r.get(k)) for k in claves if r.get(k)]
-    return {"total": len(eventos), "eventos": eventos}
-
-# PostgreSQL
-def obtener_conexion_postgres():
+# Función para conectar a PostgreSQL
+def conectar_postgres():
     return psycopg2.connect(
         dbname="trafico",
         user="jairo",
         password="1234",
-        host="localhost"
+        host="postgres",
+        port="5432"
     )
 
+# Endpoint para obtener eventos recientes
+@app.get("/eventos/recientes")
+def obtener_eventos_recientes():
+    claves = r.keys("evento:*")
+    claves = sorted(claves)[:10]  # Se toman solo los primeros 10 eventos
+    eventos = []
+    for clave in claves:
+        dato = r.get(clave)
+        if dato:
+            eventos.append(json.loads(dato))
+    return {"total": len(eventos), "eventos": eventos}
+
+# Endpoint para buscar eventos por ciudad
 @app.get("/eventos/zona")
-def eventos_por_ciudad(ciudad: str = Query(...)):
-    conn = obtener_conexion_postgres()
+def buscar_eventos_por_ciudad(ciudad: str = Query(...)):
+    conn = conectar_postgres()
     cur = conn.cursor()
     cur.execute("""
         SELECT uuid, tipo, subtipo, ciudad, calle, lat, lon, usuario, fecha
@@ -39,9 +47,10 @@ def eventos_por_ciudad(ciudad: str = Query(...)):
     conn.close()
     return {"ciudad": ciudad, "total": len(eventos), "eventos": eventos}
 
+# Endpoint para buscar eventos por tipo
 @app.get("/eventos/tipo")
-def eventos_por_tipo(tipo: str = Query(..., description="Tipo de evento: ACCIDENT, JAM, POLICE, HAZARD, ROAD_CLOSED, etc.")):
-    conn = obtener_conexion_postgres()
+def buscar_eventos_por_tipo(tipo: str = Query(..., description="Tipo de evento: ACCIDENT, JAM, POLICE, HAZARD, ROAD_CLOSED, etc.")):
+    conn = conectar_postgres()
     cur = conn.cursor()
     cur.execute("""
         SELECT uuid, tipo, subtipo, ciudad, calle, lat, lon, usuario, fecha
@@ -52,5 +61,4 @@ def eventos_por_tipo(tipo: str = Query(..., description="Tipo de evento: ACCIDEN
     eventos = [dict(zip(columnas, fila)) for fila in cur.fetchall()]
     cur.close()
     conn.close()
-
     return {"tipo": tipo, "total": len(eventos), "eventos": eventos}

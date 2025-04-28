@@ -1,5 +1,3 @@
-# traffic_generator/generador_uniforme.py
-
 import requests
 import random
 import time
@@ -11,26 +9,26 @@ ENDPOINTS = [
     "http://localhost:8000/eventos/tipo?tipo=HAZARD"
 ]
 
-# Intervalo de tiempo entre consultas (segundos)
+# Intervalo de espera entre consultas (en segundos)
 INTERVALO_MIN = 0.5
 INTERVALO_MAX = 2.0
 
-# Cantidad de consultas que queremos hacer
+# Número de consultas a realizar
 TOTAL_CONSULTAS = 100
 
-print("🚀 Iniciando generador de tráfico uniforme...")
+print("Iniciando generador de tráfico uniforme...")
 
 for i in range(TOTAL_CONSULTAS):
     endpoint = random.choice(ENDPOINTS)
     try:
         inicio = time.time()
-        response = requests.get(endpoint, timeout=5)
+        respuesta = requests.get(endpoint, timeout=5)
         duracion = time.time() - inicio
-        print(f"✅ [{i+1}/{TOTAL_CONSULTAS}] {endpoint} | Código: {response.status_code} | Tiempo: {duracion:.4f}s")
-    except Exception as e:
-        print(f"❌ Error en la consulta: {e}")
+        print(f"{i+1}/{TOTAL_CONSULTAS} - {endpoint} - Código: {respuesta.status_code} - Tiempo: {duracion:.4f}s")
+    except Exception as error:
+        print(f"Error al consultar: {error}")
 
-    # Espera un tiempo aleatorio uniforme entre INTERVALO_MIN y INTERVALO_MAX
-    time.sleep(random.uniform(INTERVALO_MIN, INTERVALO_MAX))
+    espera = random.uniform(INTERVALO_MIN, INTERVALO_MAX)
+    time.sleep(espera)
 
-print("🏁 Generador de tráfico uniforme finalizado.")
+print("Generador de tráfico uniforme finalizado.")

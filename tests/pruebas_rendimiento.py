@@ -4,36 +4,44 @@ import requests
 BASE_URL = "http://localhost:8000"
 
 def medir_tiempo(endpoint, params=None):
+    # Mide cuánto demora una consulta a un endpoint
     inicio = time.time()
-    r = requests.get(f"{BASE_URL}{endpoint}", params=params)
+    respuesta = requests.get(f"{BASE_URL}{endpoint}", params=params)
     duracion = time.time() - inicio
-    return duracion, r.status_code
+    return duracion, respuesta.status_code
 
-def prueba_eventos_recientes(n=10):
-    print("📦 Probando /eventos/recientes (Redis)")
+def probar_eventos_recientes(n=100):
+    print("Prueba: eventos recientes (Redis)")
     tiempos = []
     for _ in range(n):
-        dur, status = medir_tiempo("/eventos/recientes")
-        tiempos.append(dur)
-    print(f"⏱️ Promedio: {sum(tiempos)/n:.4f}s\n")
+        duracion, status = medir_tiempo("/eventos/recientes")
+        if status == 200:
+            tiempos.append(duracion)
+    promedio = sum(tiempos) / len(tiempos)
+    print(f"Tiempo promedio: {promedio:.4f} segundos\n")
 
-def prueba_eventos_zona(ciudad="Pudahuel", n=10):
-    print(f"🏙️ Probando /eventos/zona?ciudad={ciudad} (PostgreSQL)")
+def probar_eventos_zona(ciudad="Pudahuel", n=100):
+    print(f"Prueba: eventos por ciudad '{ciudad}' (PostgreSQL)")
     tiempos = []
     for _ in range(n):
-        dur, status = medir_tiempo("/eventos/zona", {"ciudad": ciudad})
-        tiempos.append(dur)
-    print(f"⏱️ Promedio: {sum(tiempos)/n:.4f}s\n")
+        duracion, status = medir_tiempo("/eventos/zona", {"ciudad": ciudad})
+        if status == 200:
+            tiempos.append(duracion)
+    promedio = sum(tiempos) / len(tiempos)
+    print(f"Tiempo promedio: {promedio:.4f} segundos\n")
 
-def prueba_eventos_tipo(tipo="ROAD_CLOSED", n=10):
-    print(f"🚧 Probando /eventos/tipo?tipo={tipo} (PostgreSQL)")
+def probar_eventos_tipo(tipo="ROAD_CLOSED", n=100):
+    print(f"Prueba: eventos por tipo '{tipo}' (PostgreSQL)")
     tiempos = []
     for _ in range(n):
-        dur, status = medir_tiempo("/eventos/tipo", {"tipo": tipo})
-        tiempos.append(dur)
-    print(f"⏱️ Promedio: {sum(tiempos)/n:.4f}s\n")
+        duracion, status = medir_tiempo("/eventos/tipo", {"tipo": tipo})
+        if status == 200:
+            tiempos.append(duracion)
+    promedio = sum(tiempos) / len(tiempos)
+    print(f"Tiempo promedio: {promedio:.4f} segundos\n")
 
 if __name__ == "__main__":
-    prueba_eventos_recientes()
-    prueba_eventos_zona("Pudahuel")
-    prueba_eventos_tipo("HAZARD")
+    probar_eventos_recientes()
+    probar_eventos_zona("Pudahuel")
+    probar_eventos_tipo("HAZARD")
+
